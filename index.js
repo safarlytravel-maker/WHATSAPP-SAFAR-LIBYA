@@ -35,11 +35,11 @@ app.post("/webhook", async (req, res) => {
 
       const from = message.from;
 
-      await fetch(https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages, {
+      await fetch(`https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": Bearer ${ACCESS_TOKEN}
+          "Authorization": `Bearer ${ACCESS_TOKEN}`
         },
         body: JSON.stringify({
           messaging_product: "whatsapp",
