@@ -73,7 +73,20 @@ app.post("/webhook", async (req, res) => {
       else if (text === "5") {
         reply = "👨‍💼 سيتم تحويلك إلى موظف خدمة العملاء.";
       }
+else if (text.includes("-")) {
 
+let cities = text.split("-");
+
+let fromCity = cities[0].trim();
+let toCity = cities[1].trim();
+
+reply = `✈️ طلب حجز طيران
+من: ${fromCity}
+إلى: ${toCity}
+
+يرجى كتابة تاريخ السفر.`;
+
+}
       else {
         reply = "اكتب hi لعرض قائمة خدمات Safar Libya ✈";
       }
