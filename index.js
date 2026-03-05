@@ -34,22 +34,60 @@ app.post("/webhook", async (req, res) => {
     if (message) {
 
       const from = message.from;
+      const text = message.text?.body;
 
-      const ACCESS_TOKEN = "EAAMzNHWBHXMBQ3uwtclnE07XoudL5SZBTMJwHGQ3QcVAsentZAHBtdtPY2APNsxZAGjW6MY9afZByJkbGK3DjzZA1dunr3xeuXex3ZBxRnNRKtgzzg5sgjhrJbPHXUR4ZCaZBJFNXozJ1K6H1u8LmZCYsqjS6H9otEpFwMk5QcOymgRX3Ocs8HxkW6TLXvpncC0uZCLUn6lf7Kbik2dJk6JiCWaK9tUiI6rKwvTH3ShZBeh7ZCmvNzy2I809GFf75DVtuBRBYpZCfOeuj3IX25PpF2RZCmZBstqFz2eaNMZBsHKXvQZDZD";
-      const PHONE_NUMBER_ID = "994643217068788";
+      let reply = "";
 
-      await fetch(`https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages`, {
+      if (text === "hi" || text === "Hi") {
+
+        reply = `✈ Safar Libya
+
+مرحبا بك في خدمات السفر
+
+1️⃣ حجز طيران
+2️⃣ حجز فنادق
+3️⃣ تأشيرات
+4️⃣ خدمة VIP في المطار
+5️⃣ التواصل مع موظف
+
+اكتب رقم الخدمة`;
+
+      }
+
+      else if (text === "1") {
+        reply = "✈ حجز الطيران\nمن أي مدينة تريد السفر؟";
+      }
+
+      else if (text === "2") {
+        reply = "🏨 حجز الفنادق\nاكتب اسم المدينة وتاريخ الوصول.";
+      }
+
+      else if (text === "3") {
+        reply = "📄 التأشيرات\nاكتب الدولة التي تريد استخراج التأشيرة لها.";
+      }
+
+      else if (text === "4") {
+        reply = "⭐ خدمة VIP في المطار\nاكتب المطار وتاريخ الرحلة.";
+      }
+
+      else if (text === "5") {
+        reply = "👨‍💼 سيتم تحويلك إلى موظف خدمة العملاء.";
+      }
+
+      else {
+        reply = "اكتب hi لعرض قائمة خدمات Safar Libya ✈";
+      }
+
+      await fetch(`https://graph.facebook.com/v18.0/${994643217068788}/messages`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${ACCESS_TOKEN}`
+          "Authorization": `Bearer ${EAAMzNHWBHXMBQzF5Thal7mmHL1KafMfEhIabNZAZAlnkc1Q0w5nD8o1YReFb4QG9I74ZBe1YXjCDwhQ1hEO1w7U8QNGIJ1PYFfNX1VSEpZCb4S7wCVV6om9NnCw3WjHSfhjjY2dHg9ZAEuR3iYWEVRU7KE1UZCaOoWRKAY9rnxjW3avtU41thHuVwXlAluMnoEYTSZAjWeLLH5nzcsl48DG1ZC9cvYfMxIn0RBB02ALsZAhcqed1NWIbMQZAJWJMH27oMAQNOCKEJXg6NmWjp03iOhLzWPkrmxRuZBiqAvjAwZDZD}`
         },
         body: JSON.stringify({
           messaging_product: "whatsapp",
           to: from,
-          text: {
-            body: "مرحبا بك في Safar Libya ✈️"
-          }
+          text: { body: reply }
         })
       });
 
@@ -58,6 +96,8 @@ app.post("/webhook", async (req, res) => {
   }
 
   res.sendStatus(200);
+
+});
 
 });
 const PORT = process.env.PORT || 3000;
