@@ -38,7 +38,7 @@ app.post("/webhook", async (req, res) => {
       const ACCESS_TOKEN = "EAAMzNHWBHXMBQwzvPCV7D1PxnCElxZBDIZBTnKsgU6XfNmFmauZAwpG9oH65fnyGlGROVV57tH1ZBJ2ZCsqm0CSYF4z34DXBFHggC8pZCO8NRR1HZAf3TNE7URrWvsmDvdxMTDniSIaC89VVtyjdqH8jGK0xiHWo1BShdmZBEcNqbqpAtvYyXf6eNpvipp3uu1B7ambeRiOeeIIJ4bT6tKaVnLJZBaegIIZCrDsHZCD1eV3dIwUkvJts4ZBbVEq5V0xzaO6hcxNDwVDhqZAQ75Xw2pmAKSd6TcCxFu1j2a2rHQ6wZD";
       const PHONE_NUMBER_ID = "994643217068788";
 
-      await fetch(https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages, {
+      await fetch(`https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
