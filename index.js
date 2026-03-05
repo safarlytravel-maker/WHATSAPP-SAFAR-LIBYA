@@ -78,11 +78,11 @@ app.post("/webhook", async (req, res) => {
         reply = "اكتب hi لعرض قائمة خدمات Safar Libya ✈";
       }
 
-      await fetch(`https://graph.facebook.com/v18.0/${994643217068788}/messages`, {
+      await fetch(`https://graph.facebook.com/v18.0/994643217068788/messages`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${EAAMzNHWBHXMBQzF5Thal7mmHL1KafMfEhIabNZAZAlnkc1Q0w5nD8o1YReFb4QG9I74ZBe1YXjCDwhQ1hEO1w7U8QNGIJ1PYFfNX1VSEpZCb4S7wCVV6om9NnCw3WjHSfhjjY2dHg9ZAEuR3iYWEVRU7KE1UZCaOoWRKAY9rnxjW3avtU41thHuVwXlAluMnoEYTSZAjWeLLH5nzcsl48DG1ZC9cvYfMxIn0RBB02ALsZAhcqed1NWIbMQZAJWJMH27oMAQNOCKEJXg6NmWjp03iOhLzWPkrmxRuZBiqAvjAwZDZD}`
+          "Authorization": "Bearer EAAMzNHWBHXMBQzF5Thal7mmHL1KafMfEhIabNZAZAlnkc1Q0w5nD8o1YReFb4QG9I74ZBe1YXjCDwhQ1hEO1w7U8QNGIJ1PYFfNX1VSEpZCb4S7wCVV6om9NnCw3WjHSfhjjY2dHg9ZAEuR3iYWEVRU7KE1UZCaOoWRKAY9rnxjW3avtU41thHuVwXlAluMnoEYTSZAjWeLLH5nzcsl48DG1ZC9cvYfMxIn0RBB02ALsZAhcqed1NWIbMQZAJWJMH27oMAQNOCKEJXg6NmWjp03iOhLzWPkrmxRuZBiqAvjAwZDZD"
         },
         body: JSON.stringify({
           messaging_product: "whatsapp",
