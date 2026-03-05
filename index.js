@@ -1,12 +1,70 @@
 const express = require("express");
+const fetch = require("node-fetch");
+
 const app = express();
+app.use(express.json());
+
+const VERIFY_TOKEN = "safar123";
+
+const ACCESS_TOKEN = "ضع_التوكن_هنا";
+const PHONE_NUMBER_ID = "ضع_رقم_الهاتف_هنا";
+
+app.get("/webhook", (req, res) => {
+
+  const mode = req.query["hub.mode"];
+  const token = req.query["hub.verify_token"];
+  const challenge = req.query["hub.challenge"];
+
+  if (mode === "subscribe" && token === VERIFY_TOKEN) {
+    console.log("Webhook verified");
+    res.status(200).send(challenge);
+  } else {
+    res.sendStatus(403);
+  }
+
+});
+
+app.post("/webhook", async (req, res) => {
+
+  const body = req.body;
+
+  if (body.entry) {
+
+    const message = body.entry[0].changes[0].value.messages?.[0];
+
+    if (message) {
+
+      const from = message.from;
+
+      await fetch(https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": Bearer ${ACCESS_TOKEN}
+        },
+        body: JSON.stringify({
+          messaging_product: "whatsapp",
+          to: from,
+          text: {
+            body: "مرحبا بك في Safar Libya ✈️"
+          }
+        })
+      });
+
+    }
+
+  }
+
+  res.sendStatus(200);
+
+});
 
 app.get("/", (req, res) => {
-  res.send("Safar Libya Bot Running");
+  res.send("Safar Libya WhatsApp Bot Running");
 });
 
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-  console.log("Server started on port " + PORT);
+  console.log("Server running on port", PORT);
 });
