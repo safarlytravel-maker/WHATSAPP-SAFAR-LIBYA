@@ -5,227 +5,234 @@ const app = express();
 app.use(express.json());
 
 const VERIFY_TOKEN = "safar123";
-const ACCESS_TOKEN = "EAAMzNHWBHXMBQ7ttdYSnd46gRv9QbhZAah8sioisKsIrV1zM4nUnLboIg75LLiqEfVZAbanZCpa3C49QSkRcX5UJYrxni55VYE89hAye37iwpfFiTkalXfd2R95sXVtqjnA2On9dPfN2dMzipn5SQZAyvNr6FB4c7TwcijCq768iZBeLlaZAfKF2BfvakzVSHAtICnAg697SZARGD8r7empcv1RgGZCoQg4ZCdsoZASO54YoQGCNYEqY4xZCZBjvWYD73u0XEvZACY2FuaMDtYvbOKFBmDv5yhTa5ZAyvPjQwVKgZDZD";
+const ACCESS_TOKEN = "PUT_YOUR_ACCESS_TOKEN_HERE";
 const PHONE_NUMBER_ID = "994643217068788";
 
 app.get("/", (req, res) => {
-  res.send("Safar Libya Bot Running");
+res.send("Safar Libya Bot Running");
 });
 
 app.get("/webhook", (req, res) => {
+const mode = req.query["hub.mode"];
+const token = req.query["hub.verify_token"];
+const challenge = req.query["hub.challenge"];
 
-  const mode = req.query["hub.mode"];
-  const token = req.query["hub.verify_token"];
-  const challenge = req.query["hub.challenge"];
-
-  if (mode === "subscribe" && token === VERIFY_TOKEN) {
-    res.status(200).send(challenge);
-  } else {
-    res.sendStatus(403);
-  }
-
+if (mode === "subscribe" && token === VERIFY_TOKEN) {
+res.status(200).send(challenge);
+} else {
+res.sendStatus(403);
+}
 });
 
 app.post("/webhook", async (req, res) => {
 
-  const body = req.body;
+const body = req.body;
 
-  if (body.entry) {
+if (body.entry) {
 
-    const message = body.entry[0].changes[0].value.messages?.[0];
+const message = body.entry[0].changes[0].value.messages?.[0];
 
-    if (message) {
+if (message) {
 
-      const from = message.from;
-      const text = message.text?.body;
-      const listReply = message.interactive?.list_reply?.id;
+  const from = message.from;
+  const text = message.text?.body;
+  const listReply = message.interactive?.list_reply?.id;
 
-      // القائمة الرئيسية
-      if (text === "hi") {
+  // القائمة الرئيسية
+  if (text === "hi") {
 
-        await fetch(
-          `https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${ACCESS_TOKEN}`
-            },
-            body: JSON.stringify({
-              messaging_product: "whatsapp",
-              to: from,
-              type: "interactive",
-              interactive: {
-                type: "list",
-                body: {
-                  text: "✈️ Safar Libya\nاختر الخدمة"
-                },
-                action: {
-                  button: "عرض الخدمات",
-                  sections: [
-                    {
-                      title: "خدمات السفر",
-                      rows: [
-                        { id: "flight", title: "✈️ حجز طيران" },
-                        { id: "hotel", title: "🏨 حجز فنادق" },
-                        { id: "visa", title: "📄 تأشيرات" },
-                        { id: "vip", title: "⭐ VIP المطار" }
-                      ]
-                    }
-                  ]
-                }
+    await fetch(`https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${ACCESS_TOKEN}`
+      },
+      body: JSON.stringify({
+        messaging_product: "whatsapp",
+        to: from,
+        type: "interactive",
+        interactive: {
+          type: "list",
+          body: {
+            text: "✈️ Safar Libya\nاختر الخدمة"
+          },
+          action: {
+            button: "عرض الخدمات",
+            sections: [
+              {
+                title: "خدمات السفر",
+                rows: [
+                  { id: "flight", title: "✈️ حجز طيران" },
+                  { id: "hotel", title: "🏨 حجز فنادق" },
+                  { id: "visa", title: "📄 تأشيرات" },
+                  { id: "vip", title: "⭐ VIP المطار" }
+                ]
               }
-            })
+            ]
           }
-        );
+        }
+      })
+    });
 
-        return;
-      }
-
-      // اختيار حجز طيران
-      else if (listReply === "flight") {
-
-        await fetch(
-          `https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${ACCESS_TOKEN}`
-            },
-            body: JSON.stringify({
-              messaging_product: "whatsapp",
-              to: from,
-              type: "interactive",
-              interactive: {
-                type: "list",
-                body: {
-                  text: "✈️ اختر مدينة المغادرة"
-                },
-                action: {
-                  button: "اختيار المدينة",
-                  sections: [
-                    {
-                      title: "المدن",
-                      rows: [
-                        { id: "from_benghazi", title: "بنغازي" },
-                        { id: "from_tripoli", title: "طرابلس" },
-                        { id: "from_sirte", title: "سرت" },
-                        { id: "from_cairo", title: "القاهرة" },
-                        { id: "from_alex", title: "اسكندرية" },
-                        { id: "from_tunis", title: "تونس" },
-                        { id: "from_jeddah", title: "جدة" }
-                      ]
-                    }
-                  ]
-                }
-              }
-            })
-          }
-        );
-
-        return;
-      }
-
-      // بعد اختيار مدينة المغادرة
-      else if (listReply && listReply.startsWith("from_")) {
-
-        await fetch(
-          `https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${ACCESS_TOKEN}`
-            },
-            body: JSON.stringify({
-              messaging_product: "whatsapp",
-              to: from,
-              type: "interactive",
-              interactive: {
-                type: "list",
-                body: {
-                  text: "🛬 اختر مدينة الوصول"
-                },
-                action: {
-                  button: "اختيار المدينة",
-                  sections: [
-                    {
-                      title: "المدن",
-                      rows: [
-                        { id: "to_benghazi", title: "بنغازي" },
-                        { id: "to_tripoli", title: "طرابلس" },
-                        { id: "to_sirte", title: "سرت" },
-                        { id: "to_cairo", title: "القاهرة" },
-                        { id: "to_alex", title: "اسكندرية" },
-                        { id: "to_tunis", title: "تونس" },
-                        { id: "to_jeddah", title: "جدة" }
-                      ]
-                    }
-                  ]
-                }
-              }
-            })
-          }
-        );
-
-        return;
-      }
-
-      // بعد اختيار مدينة الوصول
-      else if (listReply && listReply.startsWith("to_")) {
-
-        await fetch(
-          `https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${ACCESS_TOKEN}`
-            },
-            body: JSON.stringify({
-              messaging_product: "whatsapp",
-              to: from,
-              text: {
-                body: "✈️ اكتب تاريخ السفر مثال:\n25-03-2026"
-              }
-            })
-          }
-        );
-
-        return;
-      }
-
-      else {
-
-        await fetch(
-          `https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${ACCESS_TOKEN}`
-            },
-            body: JSON.stringify({
-              messaging_product: "whatsapp",
-              to: from,
-              text: { body: "اكتب hi لعرض الخدمات" }
-            })
-          }
-        );
-
-      }
-
-    }
-
+    return;
   }
 
-  res.sendStatus(200);
+  // عند اختيار حجز طيران
+  if (listReply === "flight") {
+
+    await fetch(`https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${ACCESS_TOKEN}`
+      },
+      body: JSON.stringify({
+        messaging_product: "whatsapp",
+        to: from,
+        type: "interactive",
+        interactive: {
+          type: "list",
+          body: {
+            text: "✈️ اختر مدينة المغادرة"
+          },
+          action: {
+            button: "اختيار المدينة",
+            sections: [
+              {
+                title: "المدن",
+                rows: [
+                  { id: "from_benghazi", title: "بنغازي" },
+                  { id: "from_tripoli", title: "طرابلس" },
+                  { id: "from_sirte", title: "سرت" },
+                  { id: "from_cairo", title: "القاهرة" },
+                  { id: "from_alex", title: "اسكندرية" },
+                  { id: "from_tunis", title: "تونس" },
+                  { id: "from_jeddah", title: "جدة" }
+                ]
+              }
+            ]
+          }
+        }
+      })
+    });
+
+    return;
+  }
+
+  // اختيار مدينة المغادرة
+  if (listReply && listReply.startsWith("from_")) {
+
+    await fetch(`https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${ACCESS_TOKEN}`
+      },
+      body: JSON.stringify({
+        messaging_product: "whatsapp",
+        to: from,
+        type: "interactive",
+        interactive: {
+          type: "list",
+          body: {
+            text: "🛬 اختر مدينة الوصول"
+          },
+          action: {
+            button: "اختيار المدينة",
+            sections: [
+              {
+                title: "المدن",
+                rows: [
+                  { id: "to_benghazi", title: "بنغازي" },
+                  { id: "to_tripoli", title: "طرابلس" },
+                  { id: "to_sirte", title: "سرت" },
+                  { id: "to_cairo", title: "القاهرة" },
+                  { id: "to_alex", title: "اسكندرية" },
+                  { id: "to_tunis", title: "تونس" },
+                  { id: "to_jeddah", title: "جدة" }
+                ]
+              }
+            ]
+          }
+        }
+      })
+    });
+
+    return;
+  }
+
+  // اختيار مدينة الوصول
+  if (listReply && listReply.startsWith("to_")) {
+
+    await fetch(`https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${ACCESS_TOKEN}`
+      },
+      body: JSON.stringify({
+        messaging_product: "whatsapp",
+        to: from,
+        text: {
+          body: "✈️ اكتب تاريخ السفر مثال:\n25-03-2026"
+        }
+      })
+    });
+
+    return;
+  }
+
+  // معالجة تاريخ السفر
+  if (text && text.match(/\d{2}-\d{2}-\d{4}/)) {
+
+    await fetch(`https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${ACCESS_TOKEN}`
+      },
+      body: JSON.stringify({
+        messaging_product: "whatsapp",
+        to: from,
+        text: {
+          body: `✅ تم استلام طلبك
+
+📅 التاريخ: ${text}
+
+سيقوم فريق Safar Libya بإرسال أفضل الرحلات قريباً ✈️`
+}
+})
+});
+
+    return;
+  }
+
+  // أي رسالة أخرى
+  await fetch(`https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${ACCESS_TOKEN}`
+    },
+    body: JSON.stringify({
+      messaging_product: "whatsapp",
+      to: from,
+      text: {
+        body: "اكتب hi لعرض الخدمات"
+      }
+    })
+  });
+
+}
+
+}
+
+res.sendStatus(200);
 
 });
 
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-  console.log("Server running on port " + PORT);
+console.log("Server running on port " + PORT);
 });
