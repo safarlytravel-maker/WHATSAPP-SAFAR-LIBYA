@@ -5,8 +5,10 @@ const app = express();
 app.use(express.json());
 
 const VERIFY_TOKEN = "safar123";
-const ACCESS_TOKEN = "EAAMzNHWBHXMBQZBdb8ZBwbi0bzSIvRy8Jd4ZCP7WTtVqOjOUHc7qDQKOBZBfCuLXW3mFEyMaqmjDbEBbFBBIx7jCsS4xGBYPZBupHylBrJtlEW6DFA947MdVLOAHE3cuzFlPLZC6LAoVyfczLYN0DT5ygw3Iv8d0wfPCzh6Rz2q016eRsg0kPWOq2yUQRNGqZBdRQ3friuZBvUXVA4tBF4CERrGmD474jXuovOxAzt8Fdle6SnfZCGC9pq4ciL9KMya6otByyjGmvydUjcppLEjuK6tM5FZC47F5ApRGM3o917";
+const ACCESS_TOKEN = "EAAMzNHWBHXMBQyD2cRKEvFBvooTlJaRrfh92IekzHzfmmUzFgEds7Cko29zIQwuQ42NHVQmvF37S26JLHiWN57d5IN5FVBPn2dUzfXX7EzZApf9EVuubjRm0p4cT9z2ihss4EQW1X0yFduEOrjFtNeWEPOO0xW9EonqXYeXVDYJ2WCR4KM1bMQST2jp04PmmaZBntmWtt0PLWEebGpWuqytX779gZAjv2TlpllaaddjJLxmx1kb5vZC4PlQzPQw0W96ukqafvkYqnm47XJHzC6yEJQi2y2fcVdDudQZDZD";
 const PHONE_NUMBER_ID = "994643217068788";
+
+let userState = {};
 
 app.get("/", (req, res) => {
 res.send("Safar Libya Bot Running");
@@ -38,8 +40,12 @@ if (message) {
   const text = message.text?.body;
   const listReply = message.interactive?.list_reply?.id;
 
+  if (!userState[from]) userState[from] = {};
+
   // القائمة الرئيسية
   if (text === "hi") {
+
+    userState[from] = {};
 
     await fetch(`https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages`, {
       method: "POST",
@@ -53,9 +59,7 @@ if (message) {
         type: "interactive",
         interactive: {
           type: "list",
-          body: {
-            text: "✈️ Safar Libya\nاختر الخدمة"
-          },
+          body: { text: "✈️ Safar Libya\nاختر الخدمة" },
           action: {
             button: "عرض الخدمات",
             sections: [
@@ -77,8 +81,10 @@ if (message) {
     return;
   }
 
-  // عند اختيار حجز طيران
+  // اختيار حجز طيران
   if (listReply === "flight") {
+
+    userState[from].step = "from";
 
     await fetch(`https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages`, {
       method: "POST",
@@ -92,25 +98,21 @@ if (message) {
         type: "interactive",
         interactive: {
           type: "list",
-          body: {
-            text: "✈️ اختر مدينة المغادرة"
-          },
+          body: { text: "✈️ اختر مدينة المغادرة" },
           action: {
             button: "اختيار المدينة",
-            sections: [
-              {
-                title: "المدن",
-                rows: [
-                  { id: "from_benghazi", title: "بنغازي" },
-                  { id: "from_tripoli", title: "طرابلس" },
-                  { id: "from_sirte", title: "سرت" },
-                  { id: "from_cairo", title: "القاهرة" },
-                  { id: "from_alex", title: "اسكندرية" },
-                  { id: "from_tunis", title: "تونس" },
-                  { id: "from_jeddah", title: "جدة" }
-                ]
-              }
-            ]
+            sections: [{
+              title: "المدن",
+              rows: [
+                { id: "from_benghazi", title: "بنغازي" },
+                { id: "from_tripoli", title: "طرابلس" },
+                { id: "from_sirte", title: "سرت" },
+                { id: "from_cairo", title: "القاهرة" },
+                { id: "from_alex", title: "اسكندرية" },
+                { id: "from_tunis", title: "تونس" },
+                { id: "from_jeddah", title: "جدة" }
+              ]
+            }]
           }
         }
       })
@@ -122,6 +124,9 @@ if (message) {
   // اختيار مدينة المغادرة
   if (listReply && listReply.startsWith("from_")) {
 
+    userState[from].from = listReply.replace("from_", "");
+    userState[from].step = "to";
+
     await fetch(`https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages`, {
       method: "POST",
       headers: {
@@ -134,25 +139,21 @@ if (message) {
         type: "interactive",
         interactive: {
           type: "list",
-          body: {
-            text: "🛬 اختر مدينة الوصول"
-          },
+          body: { text: "🛬 اختر مدينة الوصول" },
           action: {
             button: "اختيار المدينة",
-            sections: [
-              {
-                title: "المدن",
-                rows: [
-                  { id: "to_benghazi", title: "بنغازي" },
-                  { id: "to_tripoli", title: "طرابلس" },
-                  { id: "to_sirte", title: "سرت" },
-                  { id: "to_cairo", title: "القاهرة" },
-                  { id: "to_alex", title: "اسكندرية" },
-                  { id: "to_tunis", title: "تونس" },
-                  { id: "to_jeddah", title: "جدة" }
-                ]
-              }
-            ]
+            sections: [{
+              title: "المدن",
+              rows: [
+                { id: "to_benghazi", title: "بنغازي" },
+                { id: "to_tripoli", title: "طرابلس" },
+                { id: "to_sirte", title: "سرت" },
+                { id: "to_cairo", title: "القاهرة" },
+                { id: "to_alex", title: "اسكندرية" },
+                { id: "to_tunis", title: "تونس" },
+                { id: "to_jeddah", title: "جدة" }
+              ]
+            }]
           }
         }
       })
@@ -163,6 +164,9 @@ if (message) {
 
   // اختيار مدينة الوصول
   if (listReply && listReply.startsWith("to_")) {
+
+    userState[from].to = listReply.replace("to_", "");
+    userState[from].step = "date";
 
     await fetch(`https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages`, {
       method: "POST",
@@ -182,8 +186,8 @@ if (message) {
     return;
   }
 
-  // معالجة تاريخ السفر
-  if (text && text.match(/\d{2}-\d{2}-\d{4}/)) {
+  // إدخال التاريخ
+  if (userState[from].step === "date" && text) {
 
     await fetch(`https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages`, {
       method: "POST",
@@ -197,31 +201,21 @@ if (message) {
         text: {
           body: `✅ تم استلام طلبك
 
+✈️ الرحلة
+من: ${userState[from].from}
+إلى: ${userState[from].to}
+
 📅 التاريخ: ${text}
 
-سيقوم فريق Safar Libya بإرسال أفضل الرحلات قريباً ✈️`
+سيتم إرسال أفضل الرحلات قريباً.`
 }
 })
 });
 
+    userState[from] = {};
+
     return;
   }
-
-  // أي رسالة أخرى
-  await fetch(`https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${ACCESS_TOKEN}`
-    },
-    body: JSON.stringify({
-      messaging_product: "whatsapp",
-      to: from,
-      text: {
-        body: "اكتب hi لعرض الخدمات"
-      }
-    })
-  });
 
 }
 
@@ -235,4 +229,4 @@ const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
 console.log("Server running on port " + PORT);
-});
+})
