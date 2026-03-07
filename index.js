@@ -40,11 +40,62 @@ app.post("/webhook", async (req, res) => {
 
       let reply = "";
 
-      if (text === "hi") {
+    if (text === "hi") {
 
-        reply = "✈️ Safar Libya\n\n1️⃣ حجز طيران\n2️⃣ حجز فنادق\n3️⃣ تأشيرات\n4️⃣ VIP المطار\n5️⃣ موظف خدمة العملاء";
+await fetch(
+https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages,
+{
+method: "POST",
+headers: {
+"Content-Type": "application/json",
+Authorization: Bearer ${ACCESS_TOKEN}
+},
+body: JSON.stringify({
+messaging_product: "whatsapp",
+to: from,
+type: "interactive",
+interactive: {
+type: "list",
+body: {
+text: "✈️ Safar Libya\nاختر الخدمة"
+},
+action: {
+button: "عرض الخدمات",
+sections: [
+{
+title: "خدمات السفر",
+rows: [
+{
+id: "flight",
+title: "✈️ حجز طيران",
+description: "البحث عن أفضل الرحلات"
+},
+{
+id: "hotel",
+title: "🏨 حجز فنادق",
+description: "أفضل أسعار الفنادق"
+},
+{
+id: "visa",
+title: "📄 تأشيرات",
+description: "استخراج الفيزا"
+},
+{
+id: "vip",
+title: "⭐ VIP المطار",
+description: "خدمة كبار الشخصيات"
+}
+]
+}
+]
+}
+}
+})
+}
+);
 
-      }
+return;
+}
 
       else if (text === "1") {
 
