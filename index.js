@@ -37,7 +37,7 @@ app.post("/webhook", async (req, res) => {
 
       const from = message.from;
       const text = message.text?.body;
-
+const listReply = message.interactive?.list_reply?.id;
       let reply = "";
 
     if (text === "hi") {
