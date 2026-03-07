@@ -140,7 +140,8 @@ let cities = text.split("-");
 
 let fromCity = cities[0].trim();
 let toCity = cities[1].trim();
-
+})
+});
 reply = `✈️ طلب حجز طيران
 من: ${fromCity}
 إلى: ${toCity}
