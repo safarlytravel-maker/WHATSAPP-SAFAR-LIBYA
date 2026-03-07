@@ -5,7 +5,7 @@ const app = express();
 app.use(express.json());
 
 const VERIFY_TOKEN = "safar123";
-const ACCESS_TOKEN = "EAAMzNHWBHXMBQZCANTulLt6xQOuXO9kYr5FGtDKqLVyuz17ZALE5EtzfZACLQqnNFKhNZC4FyEN948F2palvIKgiBD2YGHM0UOiuZCoHJxsutfsZAVC0oJaZAEKru0uGUg2r3dzMYOyVNFazSqZBl3ZBPph9KOONwS6uKk1NKSzyWpYmZBjLRvN8HMA1gvA5ohz046qLzR862uZCN4DmaKkwYpoAx3rXK9ZC0rDki9rJMxiEDZBAwVffuKwxOAqreXcH4OOO20jbOQzHzFXty0kYGLhNJ9ORoj0wz7PgZB2x0OfgZDZD";
+const ACCESS_TOKEN = "PUT_YOUR_ACCESS_TOKEN_HERE";
 const PHONE_NUMBER_ID = "994643217068788";
 
 app.get("/", (req, res) => {
@@ -83,7 +83,7 @@ app.post("/webhook", async (req, res) => {
       }
 
       // اختيار حجز طيران
-      if (listReply === "flight") {
+      else if (listReply === "flight") {
 
         await fetch(
           `https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages`,
@@ -127,8 +127,8 @@ app.post("/webhook", async (req, res) => {
         return;
       }
 
-      // اختيار مدينة المغادرة
-      if (listReply && listReply.startsWith("from_")) {
+      // بعد اختيار مدينة المغادرة
+      else if (listReply && listReply.startsWith("from_")) {
 
         await fetch(
           `https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages`,
@@ -172,21 +172,49 @@ app.post("/webhook", async (req, res) => {
         return;
       }
 
-      await fetch(
-        `https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${ACCESS_TOKEN}`
-          },
-          body: JSON.stringify({
-            messaging_product: "whatsapp",
-            to: from,
-            text: { body: "اكتب hi لعرض الخدمات" }
-          })
-        }
-      );
+      // بعد اختيار مدينة الوصول
+      else if (listReply && listReply.startsWith("to_")) {
+
+        await fetch(
+          `https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${ACCESS_TOKEN}`
+            },
+            body: JSON.stringify({
+              messaging_product: "whatsapp",
+              to: from,
+              text: {
+                body: "✈️ اكتب تاريخ السفر مثال:\n25-03-2026"
+              }
+            })
+          }
+        );
+
+        return;
+      }
+
+      else {
+
+        await fetch(
+          `https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${ACCESS_TOKEN}`
+            },
+            body: JSON.stringify({
+              messaging_product: "whatsapp",
+              to: from,
+              text: { body: "اكتب hi لعرض الخدمات" }
+            })
+          }
+        );
+
+      }
 
     }
 
