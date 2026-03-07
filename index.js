@@ -94,7 +94,7 @@ description: "خدمة كبار الشخصيات"
 {
 id: "agent",
 title: "👨‍💼 التواصل مع موظف",
-description: "خدمة العملاء"
+description: "خدمة العملاء",
 
 ]
  } 
