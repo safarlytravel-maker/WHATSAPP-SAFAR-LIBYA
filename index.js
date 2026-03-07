@@ -217,7 +217,21 @@ if (message) {
 
   // إدخال التاريخ
   if (userState[from].step === "date" && text) {
+const origin = airportCodes[userState[from].from];
+const destination = airportCodes[userState[from].to];
 
+const response = await amadeus.shopping.flightOffersSearch.get({
+  originLocationCode: origin,
+  destinationLocationCode: destination,
+  departureDate: text,
+  adults: "1",
+  max: "3"
+});
+
+const flight = response.data[0];
+
+const airline = flight.validatingAirlineCodes[0];
+const price = flight.price.total;
     await fetch(`https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages`, {
       method: "POST",
       headers: {
@@ -228,15 +242,16 @@ if (message) {
         messaging_product: "whatsapp",
         to: from,
         text: {
-          body: `✅ تم استلام طلبك
+         body: `✈️ أفضل رحلة
 
-✈️ الرحلة
 من: ${userState[from].from}
 إلى: ${userState[from].to}
 
-📅 التاريخ: ${text}
+شركة الطيران: ${airline}
+السعر: ${price} EUR
+التاريخ: ${text}
 
-سيتم إرسال أفضل الرحلات قريباً.`
+سنقوم بتأكيد الحجز معك قريباً`
 }
 })
 });
