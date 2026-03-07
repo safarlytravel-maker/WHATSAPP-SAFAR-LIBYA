@@ -95,10 +95,6 @@ description: "خدمة كبار الشخصيات"
 id: "agent",
 title: "👨‍💼 التواصل مع موظف",
 description: "خدمة العملاء"
-}
-]
-});
-
       }
 
       else if (text === "1") {
