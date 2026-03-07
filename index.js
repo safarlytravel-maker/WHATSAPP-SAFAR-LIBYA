@@ -32,8 +32,24 @@ const body = req.body;
 
 if (body.entry) {
 
-const message = body.entry[0].changes[0].value.messages?.[0];
+const value = body.entry[0].changes[0].value;
 
+if (!value.messages) {
+  return res.sendStatus(200);
+}
+
+const message = value.messages[0];
+const messageId = message.id;
+
+if (!global.processed) {
+  global.processed = new Set();
+}
+
+if (global.processed.has(messageId)) {
+  return res.sendStatus(200);
+}
+
+global.processed.add(messageId);
 if (message) {
 
   const from = message.from;
