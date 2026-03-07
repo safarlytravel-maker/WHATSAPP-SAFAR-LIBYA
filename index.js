@@ -1,13 +1,26 @@
 const express = require("express");
 const fetch = require("node-fetch");
+const Amadeus = require("amadeus");
 
+const amadeus = new Amadeus({
+  clientId: "4GznDEeUB3sgpFlI6ZZddXulaJX2GAKO",
+  clientSecret: "AAeL7corEdJ9dWhl"
+});
 const app = express();
 app.use(express.json());
 
 const VERIFY_TOKEN = "safar123";
 const ACCESS_TOKEN = "EAAMzNHWBHXMBQ0iNRyEyWzybveSX829k8F7jNm87lg8tGlWRcZCMgT21B1nj01evYjsiarGeMBQVXZCLPqNvrA5BYYchwmk5REjAoE7dUAcdGCHMCTOLNghQdZBN2qt6JZA8wzuIgcgkZBDxzwNBhZCFREgMnvlLtNkzyMQhF4s0bhJnPlZB1BMjiMEnybSeTwn5CXPJQEZAgFavpDrs0ZC62XYTnkVJXv4VOPMaIvGlyAoAvjNaw5A8GF46DhJjlL4ZCYa4m8NC3QHCJ032ZBnCEjkcK4WJNbkRVWb5hqe3wZDZD";
 const PHONE_NUMBER_ID = "994643217068788";
-
+const airportCodes = {
+  benghazi: "BEN",
+  tripoli: "MJI",
+  sirte: "SRX",
+  cairo: "CAI",
+  alex: "HBE",
+  tunis: "TUN",
+  jeddah: "JED"
+};
 let userState = {};
 
 app.get("/", (req, res) => {
