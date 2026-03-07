@@ -5,7 +5,7 @@ const app = express();
 app.use(express.json());
 
 const VERIFY_TOKEN = "safar123";
-const ACCESS_TOKEN = "EAAMzNHWBHXMBQyD2cRKEvFBvooTlJaRrfh92IekzHzfmmUzFgEds7Cko29zIQwuQ42NHVQmvF37S26JLHiWN57d5IN5FVBPn2dUzfXX7EzZApf9EVuubjRm0p4cT9z2ihss4EQW1X0yFduEOrjFtNeWEPOO0xW9EonqXYeXVDYJ2WCR4KM1bMQST2jp04PmmaZBntmWtt0PLWEebGpWuqytX779gZAjv2TlpllaaddjJLxmx1kb5vZC4PlQzPQw0W96ukqafvkYqnm47XJHzC6yEJQi2y2fcVdDudQZDZD";
+const ACCESS_TOKEN = "EAAMzNHWBHXMBQ0iNRyEyWzybveSX829k8F7jNm87lg8tGlWRcZCMgT21B1nj01evYjsiarGeMBQVXZCLPqNvrA5BYYchwmk5REjAoE7dUAcdGCHMCTOLNghQdZBN2qt6JZA8wzuIgcgkZBDxzwNBhZCFREgMnvlLtNkzyMQhF4s0bhJnPlZB1BMjiMEnybSeTwn5CXPJQEZAgFavpDrs0ZC62XYTnkVJXv4VOPMaIvGlyAoAvjNaw5A8GF46DhJjlL4ZCYa4m8NC3QHCJ032ZBnCEjkcK4WJNbkRVWb5hqe3wZDZD";
 const PHONE_NUMBER_ID = "994643217068788";
 
 let userState = {};
@@ -229,4 +229,4 @@ const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
 console.log("Server running on port " + PORT);
-})
+});
