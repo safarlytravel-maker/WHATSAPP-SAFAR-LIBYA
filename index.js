@@ -5,7 +5,7 @@ const app = express();
 app.use(express.json());
 
 const VERIFY_TOKEN = "safar123";
-const ACCESS_TOKEN = "PUT_YOUR_ACCESS_TOKEN_HERE";
+const ACCESS_TOKEN = "EAAMzNHWBHXMBQ7ttdYSnd46gRv9QbhZAah8sioisKsIrV1zM4nUnLboIg75LLiqEfVZAbanZCpa3C49QSkRcX5UJYrxni55VYE89hAye37iwpfFiTkalXfd2R95sXVtqjnA2On9dPfN2dMzipn5SQZAyvNr6FB4c7TwcijCq768iZBeLlaZAfKF2BfvakzVSHAtICnAg697SZARGD8r7empcv1RgGZCoQg4ZCdsoZASO54YoQGCNYEqY4xZCZBjvWYD73u0XEvZACY2FuaMDtYvbOKFBmDv5yhTa5ZAyvPjQwVKgZDZD";
 const PHONE_NUMBER_ID = "994643217068788";
 
 app.get("/", (req, res) => {
