@@ -44,7 +44,7 @@ app.post("/webhook", async (req, res) => {
 method: "POST",
 headers: {
 "Content-Type": "application/json",
-"Authorization": Bearer ${ACCESS_TOKEN}
+"Authorization": `Bearer ${ACCESS_TOKEN}`
 },
 
 body: JSON.stringify({
