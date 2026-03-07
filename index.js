@@ -37,97 +37,156 @@ app.post("/webhook", async (req, res) => {
 
       const from = message.from;
       const text = message.text?.body;
-const listReply = message.interactive?.list_reply?.id;
+      const listReply = message.interactive?.list_reply?.id;
+
       let reply = "";
 
-    if (text === "hi") {
+      // القائمة الرئيسية
+      if (text === "hi") {
 
-await fetch(
-`https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages`,
-{
-method: "POST",
-headers: {
-"Content-Type": "application/json",
-Authorization: `Bearer ${ACCESS_TOKEN}`
-},
-body: JSON.stringify({
-messaging_product: "whatsapp",
-to: from,
-type: "interactive",
-interactive: {
-type: "list",
-body: {
-text: "✈️ Safar Libya\nاختر الخدمة"
-},
-action: {
-button: "عرض الخدمات",
-sections: [
-{
-title: "خدمات السفر",
-rows: [
-{
-id: "flight",
-title: "✈️ حجز طيران",
-description: "البحث عن أفضل الرحلات"
-},
-{
-id: "hotel",
-title: "🏨 حجز فنادق",
-description: "أفضل أسعار الفنادق"
-},
-{
-id: "visa",
-title: "📄 تأشيرات",
-description: "استخراج الفيزا"
-},
-{
-id: "vip",
-title: "⭐ VIP المطار",
-description: "خدمة كبار الشخصيات"
-}
-]
-}
-]
-}
-}
-})
-}
-);
+        await fetch(
+          https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: Bearer ${ACCESS_TOKEN}
+            },
+            body: JSON.stringify({
+              messaging_product: "whatsapp",
+              to: from,
+              type: "interactive",
+              interactive: {
+                type: "list",
+                body: {
+                  text: "✈️ Safar Libya\nاختر الخدمة"
+                },
+                action: {
+                  button: "عرض الخدمات",
+                  sections: [
+                    {
+                      title: "خدمات السفر",
+                      rows: [
+                        {
+                          id: "flight",
+                          title: "✈️ حجز طيران",
+                          description: "البحث عن أفضل الرحلات"
+                        },
+                        {
+                          id: "hotel",
+                          title: "🏨 حجز فنادق",
+                          description: "أفضل أسعار الفنادق"
+                        },
+                        {
+                          id: "visa",
+                          title: "📄 تأشيرات",
+                          description: "استخراج الفيزا"
+                        },
+                        {
+                          id: "vip",
+                          title: "⭐ VIP المطار",
+                          description: "خدمة كبار الشخصيات"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            })
+          }
+        );
 
-return;
-}
-
-      else if (text === "1") {
-
-        reply = "✈️ حجز الطيران\nاكتب:\nبنغازي - اسطنبول";
-
+        return;
       }
 
-      else if (text.includes("-")) {
+      // عند اختيار حجز طيران
+      if (listReply === "flight") {
 
-        let cities = text.split("-");
+        await fetch(
+          https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: Bearer ${ACCESS_TOKEN}
+            },
+            body: JSON.stringify({
+              messaging_product: "whatsapp",
+              to: from,
+              type: "interactive",
+              interactive: {
+                type: "list",
+                body: {
+                  text: "✈️ اختر مدينة المغادرة"
+                },
+                action: {
+                  button: "اختيار المدينة",
+                  sections: [
+                    {
+                      title: "المدن",
+                      rows: [
+                        { id: "from_benghazi", title: "بنغازي" },
+                        { id: "from_tripoli", title: "طرابلس" },
+                        { id: "from_sirte", title: "سرت" },
+                        { id: "from_cairo", title: "القاهرة" },
+                        { id: "from_alex", title: "اسكندرية" },
+                        { id: "from_tunis", title: "تونس" },
+                        { id: "from_jeddah", title: "جدة" }
+                      ]
+                    }
+                  ]
+                }
+              }
+            })
+          }
+        );
 
-        let fromCity = cities[0].trim();
-        let toCity = cities[1].trim();
-
-        reply = `✈️ طلب حجز طيران
-
-من: ${fromCity}
-إلى: ${toCity}
-
-اكتب تاريخ السفر مثال:
-25-03-2026`;
-
+        return;
       }
 
-      else if (text.match(/\d{2}-\d{2}-\d{4}/)) {
+      // بعد اختيار مدينة المغادرة
+      if (listReply && listReply.startsWith("from_")) {
 
-        reply = `✈️ تم استلام الطلب
+        await fetch(
+          https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: Bearer ${ACCESS_TOKEN}
+            },
+            body: JSON.stringify({
+              messaging_product: "whatsapp",
+              to: from,
+              type: "interactive",
+              interactive: {
+                type: "list",
+                body: {
+                  text: "🛬 اختر مدينة الوصول"
+                },
+                action: {
+                  button: "اختيار المدينة",
+                  sections: [
+                    {
+                      title: "المدن",
+                      rows: [
+                        { id: "to_benghazi", title: "بنغازي" },
+                        { id: "to_tripoli", title: "طرابلس" },
+                        { id: "to_sirte", title: "سرت" },
+                        { id: "to_cairo", title: "القاهرة" },
+                        { id: "to_alex", title: "اسكندرية" },
+                        { id: "to_tunis", title: "تونس" },
+                        { id: "to_jeddah", title: "جدة" }
+                      ]
+                    }
+                  ]
+                }
+              }
+            })
+          }
+        );
 
-التاريخ: ${text}
-
-سيتم إرسال أفضل الرحلات قريباً`;
-
+        return;
       }
 
       else {
@@ -142,7 +201,7 @@ return;
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${ACCESS_TOKEN}`
+            Authorization: `Bearer ${ACCESS_TOKEN}`
           },
           body: JSON.stringify({
             messaging_product: "whatsapp",
