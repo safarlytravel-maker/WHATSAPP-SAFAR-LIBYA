@@ -228,7 +228,7 @@ if (message) {
 })
 });
 
-    userState[from] = {};
+    delete userState[from];
 
     return;
   }
