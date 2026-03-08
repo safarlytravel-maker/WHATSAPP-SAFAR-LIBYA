@@ -219,15 +219,7 @@ if (message) {
   if (userState[from].step === "date" && text) {
     let formattedDate = text;
 
-if (text.includes("-")) {
 
-const parts = text.split("-");
-
-if (parts[0].length === 2) {
-formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
-}
-
-}
 const origin = airportCodes[userState[from].from];
 const destination = airportCodes[userState[from].to];
 
