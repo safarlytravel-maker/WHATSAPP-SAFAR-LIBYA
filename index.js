@@ -234,7 +234,7 @@ const destination = airportCodes[userState[from].to];
 const response = await amadeus.shopping.flightOffersSearch.get({
   originLocationCode: origin,
   destinationLocationCode: destination,
-  departureDate: text,
+  departureDate: formattedDate,
   adults: "1",
   max: "3"
 });
