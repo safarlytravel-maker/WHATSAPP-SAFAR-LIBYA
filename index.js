@@ -151,7 +151,7 @@ if (message) {
   }
 
   // اختيار مدينة المغادرة
-  if (listReply && listReply.startsWith("from_")) {
+ if (userState[from].step === "from" && listReply && listReply.startsWith("from_")) {
 
     userState[from].from = listReply.replace("from_", "");
     userState[from].step = "to";
@@ -192,7 +192,7 @@ if (message) {
   }
 
   // اختيار مدينة الوصول
-  if (listReply && listReply.startsWith("to_")) {
+  if (userState[from].step === "to" && listReply && listReply.startsWith("to_")) {
 
     userState[from].to = listReply.replace("to_", "");
     userState[from].step = "date";
