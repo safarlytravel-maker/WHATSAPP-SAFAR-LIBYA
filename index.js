@@ -21,6 +21,15 @@ const airportCodes = {
   tunis: "TUN",
   jeddah: "JED"
 };
+const cityNames = {
+  benghazi: "بنغازي",
+  tripoli: "طرابلس",
+  sirte: "سرت",
+  cairo: "القاهرة",
+  alex: "اسكندرية",
+  tunis: "تونس",
+  jeddah: "جدة"
+};
 let userState = {};
 
 app.get("/", (req, res) => {
@@ -232,7 +241,26 @@ const response = await amadeus.shopping.flightOffersSearch.get({
 });
 
 const flight = response.data[0];
+if (!response.data || response.data.length === 0) {
 
+await fetch(`https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages`, {
+method: "POST",
+headers: {
+"Content-Type": "application/json",
+Authorization: `Bearer ${ACCESS_TOKEN}`
+},
+body: JSON.stringify({
+messaging_product: "whatsapp",
+to: from,
+text: {
+body: "⚠️ لم يتم العثور على رحلات في هذا التاريخ"
+}
+})
+});
+
+return;
+
+}
 const airline = flight.validatingAirlineCodes[0];
 const price = flight.price.total;
     await fetch(`https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages`, {
