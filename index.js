@@ -66,13 +66,13 @@ global.processed.add(messageId);
 if (message) {
 
   const from = message.from;
-  const text = message.text?.body;
+  const text = message.text?.body || "";
   const listReply = message.interactive?.list_reply?.id;
 
   if (!userState[from]) userState[from] = {};
 
   // القائمة الرئيسية
-  if (text === "hi") {
+  if (text && text.toLowerCase() === "hi") {
 
     userState[from] = {};
 
@@ -207,8 +207,7 @@ if (message) {
         messaging_product: "whatsapp",
         to: from,
         text: {
-          body: "✈️ اكتب تاريخ السفر مثال:\n25-03-2026"
-        }
+        body: "✈️ اكتب تاريخ السفر\n\nمثال:\n2026-03-25"
       })
     });
 
@@ -253,16 +252,15 @@ const price = flight.price.total;
         messaging_product: "whatsapp",
         to: from,
         text: {
-         body: `✈️ أفضل رحلة
+        body: `✈️ رحلة مقترحة
 
-من: ${userState[from].from}
-إلى: ${userState[from].to}
+🛫 ${cityNames[userState[from].from]} → ${cityNames[userState[from].to]}
 
-شركة الطيران: ${airline}
-السعر: ${price} EUR
-التاريخ: ${text}
+🛩 ${airline}
+💰 ${price} EUR
+📅 ${text}
 
-سنقوم بتأكيد الحجز معك قريباً`
+سيتواصل معك فريق Safar Libya لتأكيد الحجز`
 }
 })
 });
