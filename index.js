@@ -216,7 +216,7 @@ if (message) {
   }
 
   // إدخال التاريخ
-  if (userState[from].step === "date" && text) {
+if (userState[from] && userState[from].step === "date" && text) {
     let formattedDate = text;
 
 
