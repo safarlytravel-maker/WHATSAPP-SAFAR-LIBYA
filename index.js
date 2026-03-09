@@ -78,15 +78,16 @@ let state = userState[from];
 
 // START
 
-if(text==="hi"){
+if (text && text.toLowerCase().trim() === "hi") {
+
+userState[from] = {};
 
 await sendMessage(from,
-"✈️ مرحبا بك في Safar Libya\n\nاكتب المدن هكذا:\n\nبنغازي - القاهرة");
+"✈️ مرحبا بك في Safar Libya\n\nاكتب المدن بهذا الشكل:\n\nبنغازي - القاهرة"
+);
 
-return res.sendStatus(200);
-
+return;
 }
-
 
 // اختيار المدن
 
