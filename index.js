@@ -239,50 +239,62 @@ text:{body:text}
 
 // قائمة الرحلات
 
-async function sendFlightList(user,flights){
+async function sendFlightList(user, flights) {
 
-await fetch(`https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages`,{
+await fetch(https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages, {
 
-method:"POST",
+method: "POST",
 
-headers:{
-"Content-Type":"application/json",
-Authorization:`Bearer ${ACCESS_TOKEN}`
+headers: {
+"Content-Type": "application/json",
+Authorization: Bearer ${ACCESS_TOKEN}
 },
 
-body:JSON.stringify({
+body: JSON.stringify({
 
-messaging_product:"whatsapp",
+messaging_product: "whatsapp",
 
-to:user,
+to: user,
 
-type:"interactive",
+type: "interactive",
 
-interactive:{
+interactive: {
 
-type:"list",
+type: "list",
 
-body:{text:"أفضل الرحلات"},
+body: {
+text: "✈️ أفضل الرحلات"
+},
 
-action:{
+action: {
 
-button:"اختيار الرحلة",
+button: "اختيار الرحلة",
 
-sections:[{
+sections: [
+{
+title: "Flights",
 
-title:"Flights",
-
-rows:[
-
-{ id:"flight1",title:"الرحلة 1",description:${flights[0].price.total} EUR},
-
-{ id:"flight2",title:"الرحلة 2",description:${flights[1].price.total} EUR},
-
-{ id:"flight3",title:"الرحلة 3",description:${flights[2].price.total} EUR}
-
+rows: [
+{
+id: "flight1",
+title: "الرحلة 1",
+description: ${flights[0].price.total} EUR
+},
+{
+id: "flight2",
+title: "الرحلة 2",
+description: ${flights[1].price.total} EUR
+},
+{
+id: "flight3",
+title: "الرحلة 3",
+description: ${flights[2].price.total} EUR
+}
 ]
 
-}]
+}
+
+]
 
 }
 
