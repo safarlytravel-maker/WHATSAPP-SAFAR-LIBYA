@@ -278,17 +278,17 @@ rows: [
 {
 id: "flight1",
 title: "الرحلة 1",
-description: ${flights[0].price.total} EUR
+description: `${flights[0].price.total} EUR`
 },
 {
 id: "flight2",
 title: "الرحلة 2",
-description: ${flights[1].price.total} EUR
+description: `${flights[1].price.total} EUR`
 },
 {
 id: "flight3",
 title: "الرحلة 3",
-description: ${flights[2].price.total} EUR
+description: `${flights[2].price.total} EUR`
 }
 ]
 
