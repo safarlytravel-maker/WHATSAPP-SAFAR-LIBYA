@@ -6,33 +6,33 @@ const app = express();
 app.use(express.json());
 
 const amadeus = new Amadeus({
-  clientId: "4GznDEeUB3sgpFlI6ZZddXulaJX2GAKO",
-  clientSecret: "AAeL7corEdJ9dWhl"
+clientId: "4GznDEeUB3sgpFlI6ZZddXulaJX2GAKO",
+clientSecret: "AAeL7corEdJ9dWhl"
 });
 
 const VERIFY_TOKEN = "safar123";
-const ACCESS_TOKEN = "EAAMzNHWBHXMBQ9gjokiIdC0loqSRGZBSLhbvWpBRRF0BwEYl9EpyKotZAzrCnAzKv2ZBRIefWGVa5jThqDsIDXa1ZCFaTkdDUa3uQFJp0rnUy8LprX8mC3yKAaSA8zBKdtICDjDE77AXCCf70RZBYDAh8haZBN3BqYCegNKKaljxGSl7f8FsXLkB59BdyjvfpWYI6YzcdcpRd9EUToBLfvZB4oOxCy68nDTJygtRZCaNqULJ4mgwjutfmvgq5YrP4p5XkvI8URnnbhlN8X3F0xWkc3Siwpx9cgd3cOwPiAZDZD";
-const PHONE_NUMBER_ID = "994643217068788";
+const ACCESS_TOKEN = "EAAMzNHWBHXMBQ0hqMZCBvVZA5w0M6DMYjoIZAKLHhm1MSRhncXBoEZBroIYDSHicOsR6LZBUefoRXwmvvbd99dA9Wpk2SkKY7rZCteJfnDHhy0yAiDNxrVNZAGQ11Kz67fqaaStLujAJCKuZC5ka9vGWsoIVfeRJXVy2zmh3LMCW7MxzkKojtMtGwytRc9CEPTLRuvpBxNu2EFxHjFk3uZBJipz6RnQ9uMGvkEnP28Fqgpg8Gse4cseHJJtbpNZB9t5nW9ThcTZBGfGWVvg0zxNlYqIF7ZBlTFV3Q4sToPQEZAQZDZD";
+const PHONE_NUMBER_ID = "WHATSAPP_PHONE_ID";
 
 const airportCodes = {
-  benghazi: "BEN",
-  tripoli: "MJI",
-  cairo: "CAI",
-  tunis: "TUN",
-  jeddah: "JED"
+benghazi: "BEN",
+tripoli: "MJI",
+cairo: "CAI",
+tunis: "TUN",
+jeddah: "JED"
 };
 
 const cityNames = {
-  benghazi: "بنغازي",
-  tripoli: "طرابلس",
-  cairo: "القاهرة",
-  tunis: "تونس",
-  jeddah: "جدة"
+benghazi: "بنغازي",
+tripoli: "طرابلس",
+cairo: "القاهرة",
+tunis: "تونس",
+jeddah: "جدة"
 };
 
 let userState = {};
 
-app.get("/", (req,res)=>{
+app.get("/",(req,res)=>{
 res.send("Safar Libya Bot Running");
 });
 
@@ -54,28 +54,36 @@ app.post("/webhook",async(req,res)=>{
 
 const body = req.body;
 
-if(!body.entry) return res.sendStatus(200);
+if(!body.entry){
+return res.sendStatus(200);
+}
 
 const message = body.entry[0].changes[0].value.messages?.[0];
 
-if(!message) return res.sendStatus(200);
+if(!message){
+return res.sendStatus(200);
+}
 
 const from = message.from;
-const text = message.text?.body;
+const text = message.text?.body?.toLowerCase().trim();
 const listReply = message.interactive?.list_reply?.id;
 const buttonReply = message.interactive?.button_reply?.id;
 
-if(!userState[from]) userState[from] = {};
+if(!userState[from]){
+userState[from] = {};
+}
 
 let state = userState[from];
 
 
-// HI
+// START
 
-if (text && text.toLowerCase().trim() === "hi") {
-await sendMessage(from,"✈️ مرحبا بك في Safar Libya\nاكتب hi للبدء");
+if(text==="hi"){
 
-return;
+await sendMessage(from,
+"✈️ مرحبا بك في Safar Libya\n\nاكتب المدن هكذا:\n\nبنغازي - القاهرة");
+
+return res.sendStatus(200);
 
 }
 
@@ -93,9 +101,10 @@ state.from = fromCity;
 state.to = toCity;
 state.step = "date";
 
-await sendMessage(from,"اكتب تاريخ السفر مثال\n2026-05-10");
+await sendMessage(from,
+"📅 اكتب تاريخ السفر\nمثال:\n2026-05-10");
 
-return;
+return res.sendStatus(200);
 
 }
 
@@ -104,22 +113,27 @@ return;
 
 if(state.step==="date" && text){
 
+try{
+
 let origin = airportCodes[state.from];
 let destination = airportCodes[state.to];
 
-const response = await amadeus.shopping.flightOffersSearch.get({
-originLocationCode:origin,
-destinationLocationCode:destination,
-departureDate:text,
-adults:"1",
-max:"3"
+const response =
+await amadeus.shopping.flightOffersSearch.get({
+
+originLocationCode: origin,
+destinationLocationCode: destination,
+departureDate: text,
+adults: "1",
+max: "5"
+
 });
 
 if(!response.data || response.data.length===0){
 
-await sendMessage(from,"لا توجد رحلات");
+await sendMessage(from,"⚠️ لا توجد رحلات في هذا التاريخ");
 
-return;
+return res.sendStatus(200);
 
 }
 
@@ -128,7 +142,13 @@ state.step = "chooseFlight";
 
 await sendFlightList(from,state.flights);
 
-return;
+}catch(e){
+
+await sendMessage(from,"⚠️ حدث خطأ في البحث");
+
+}
+
+return res.sendStatus(200);
 
 }
 
@@ -142,9 +162,9 @@ let index = parseInt(listReply.replace("flight",""))-1;
 state.flight = state.flights[index];
 state.step = "name";
 
-await sendMessage(from,"اكتب الاسم كما في الجواز");
+await sendMessage(from,"👤 اكتب الاسم كما في الجواز");
 
-return;
+return res.sendStatus(200);
 
 }
 
@@ -156,9 +176,9 @@ if(state.step==="name"){
 state.name = text;
 state.step="passport";
 
-await sendMessage(from,"اكتب رقم الجواز");
+await sendMessage(from,"🛂 اكتب رقم الجواز");
 
-return;
+return res.sendStatus(200);
 
 }
 
@@ -167,12 +187,13 @@ return;
 
 if(state.step==="passport"){
 
-state.passport=text;
-state.step="expiry";
+state.passport = text;
+state.step = "expiry";
 
-await sendMessage(from,"اكتب تاريخ انتهاء الجواز\n2028-10-01");
+await sendMessage(from,
+"📅 اكتب تاريخ انتهاء الجواز\nمثال\n2028-10-01");
 
-return;
+return res.sendStatus(200);
 
 }
 
@@ -181,21 +202,21 @@ return;
 
 if(state.step==="expiry"){
 
-state.expiry=text;
+state.expiry = text;
 state.step="payment";
 
 await sendPaymentOptions(from);
 
-return;
+return res.sendStatus(200);
 
 }
 
 
-// اختيار الدفع
+// الدفع
 
 if(state.step==="payment" && buttonReply){
 
-await sendMessage(from,"جاري إصدار التذكرة...");
+await sendMessage(from,"💳 جاري إصدار التذكرة...");
 
 setTimeout(()=>{
 sendTicket(from,state);
@@ -203,7 +224,7 @@ sendTicket(from,state);
 
 state.step="done";
 
-return;
+return res.sendStatus(200);
 
 }
 
@@ -212,7 +233,7 @@ res.sendStatus(200);
 });
 
 
-// إرسال نص
+// ارسال رسالة
 
 async function sendMessage(user,text){
 
@@ -226,9 +247,11 @@ Authorization:`Bearer ${ACCESS_TOKEN}`
 },
 
 body:JSON.stringify({
+
 messaging_product:"whatsapp",
 to:user,
 text:{body:text}
+
 })
 
 });
@@ -238,58 +261,46 @@ text:{body:text}
 
 // قائمة الرحلات
 
-async function sendFlightList(user, flights) {
+async function sendFlightList(user,flights){
 
-await fetch(`https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages`, {
+await fetch(`https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages`,{
 
-method: "POST",
+method:"POST",
 
-headers: {
-"Content-Type": "application/json",
-Authorization: `Bearer ${ACCESS_TOKEN}`
+headers:{
+"Content-Type":"application/json",
+Authorization:`Bearer ${ACCESS_TOKEN}`
 },
 
-body: JSON.stringify({
+body:JSON.stringify({
 
-messaging_product: "whatsapp",
+messaging_product:"whatsapp",
+to:user,
+type:"interactive",
 
-to: user,
+interactive:{
 
-type: "interactive",
+type:"list",
 
-interactive: {
-
-type: "list",
-
-body: {
-text: "✈️ أفضل الرحلات"
+body:{
+text:"✈️ أفضل الرحلات"
 },
 
-action: {
+action:{
 
-button: "اختيار الرحلة",
+button:"اختيار الرحلة",
 
-sections: [
+sections:[
 {
-title: "Flights",
+title:"Flights",
 
-rows: [
-{
-id: "flight1",
-title: "الرحلة 1",
-description: `${flights[0].price.total} EUR`
-},
-{
-id: "flight2",
-title: "الرحلة 2",
-description: `${flights[1].price.total} EUR`
-},
-{
-id: "flight3",
-title: "الرحلة 3",
-description: `${flights[2].price.total} EUR`
-}
-]
+rows: flights.map((f,i)=>({
+
+id:flight${i+1},
+title:الرحلة ${i+1},
+description:`${f.price.total} EUR`
+
+}))
 
 }
 
@@ -306,7 +317,7 @@ description: `${flights[2].price.total} EUR`
 }
 
 
-// طرق الدفع
+// الدفع
 
 async function sendPaymentOptions(user){
 
@@ -322,31 +333,35 @@ Authorization:`Bearer ${ACCESS_TOKEN}`
 body:JSON.stringify({
 
 messaging_product:"whatsapp",
-
 to:user,
-
 type:"interactive",
 
 interactive:{
 
 type:"button",
 
-header:{
-type:"image",
-image:{link:"https://yourserver.com/payments.jpg"}
+body:{
+text:"💳 اختر طريقة الدفع"
 },
-
-body:{text:"اختر طريقة الدفع"},
 
 action:{
 
 buttons:[
 
-{type:"reply",reply:{id:"pay1",title:"Edfa3ly"}},
+{
+type:"reply",
+reply:{id:"pay1",title:"Edfa3ly"}
+},
 
-{type:"reply",reply:{id:"pay2",title:"MobiCash"}},
+{
+type:"reply",
+reply:{id:"pay2",title:"MobiCash"}
+},
 
-{type:"reply",reply:{id:"pay3",title:"Musrufi"}}
+{
+type:"reply",
+reply:{id:"pay3",title:"Musrufi"}
+}
 
 ]
 
@@ -361,7 +376,7 @@ buttons:[
 }
 
 
-// إرسال التذكرة
+// ارسال التذكرة
 
 async function sendTicket(user,state){
 
@@ -377,9 +392,7 @@ Authorization:`Bearer ${ACCESS_TOKEN}`
 body:JSON.stringify({
 
 messaging_product:"whatsapp",
-
 to:user,
-
 type:"document",
 
 document:{
@@ -398,6 +411,6 @@ const PORT = process.env.PORT || 3000;
 
 app.listen(PORT,()=>{
 
-console.log("Server running");
+console.log("Server running on port "+PORT);
 
 });
