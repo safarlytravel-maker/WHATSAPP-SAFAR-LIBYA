@@ -72,8 +72,7 @@ let state = userState[from];
 
 // HI
 
-if(text && text.toLowerCase()==="hi"){
-
+if (text && text.toLowerCase().trim() === "hi") {
 await sendMessage(from,"✈️ مرحبا بك في Safar Libya\nاكتب hi للبدء");
 
 return;
