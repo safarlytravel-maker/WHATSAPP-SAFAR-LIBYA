@@ -297,9 +297,9 @@ title:"Flights",
 
 rows: flights.map((f,i)=>({
 
-id:flight${i+1},
-title:الرحلة ${i+1},
-description:${f.price.total} EUR
+id:`flight${i+1}`,
+title:`الرحلة ${i+1}`,
+description:`${f.price.total} EUR`
 
 }))
 
