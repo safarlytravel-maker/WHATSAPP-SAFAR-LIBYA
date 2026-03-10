@@ -93,7 +93,7 @@ return;
 
 // اختيار المدن
 
-if(text && text.includes("-")){
+if(text && text.includes("-") && ! state.step){
 
 let parts = text.split("-");
 
