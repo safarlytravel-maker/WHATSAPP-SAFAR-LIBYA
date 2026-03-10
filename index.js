@@ -12,14 +12,16 @@ clientSecret: "AAeL7corEdJ9dWhl"
 
 const VERIFY_TOKEN = "safar123";
 const ACCESS_TOKEN = "EAAMzNHWBHXMBQ4BM716mSZAw0IWYuJUtSKRRwQYqpua77zBZCbrB3XiYwr5ZBnCwHgvrxTYilABBBtBZCVBFHVGiYkrXeNpjwEbZAS9ZClwFTiZAdaTp2M55iMPXQHGTeZApRzI5rjAMZBTpGBVDMbDgZAZA2EwanUkZAQXpsrlXmjD30ZBo7ygyZAQ02FiyUfhWVrNrWTQSk8qj3BpekgHbuqYMOooGqQcmYWxZAJkHNCiFqBcrqZCy3wcU2uwEZChpZAw66qamwCFIyp5kRhBJ1K1o8ZAZAdblZBpD6R6wJ21ugXZCSLClYZD";
-const PHONE_NUMBER_ID = "WHATSAPP_PHONE_ID";
+const PHONE_NUMBER_ID = "994643217068788";
 
 const airportCodes = {
-benghazi: "BEN",
-tripoli: "MJI",
-cairo: "CAI",
-tunis: "TUN",
-jeddah: "JED"
+
+"بنغازي":"BEN",
+"طرابلس":"MJI",
+"القاهرة":"CAI",
+"تونس":"TUN",
+"جدة":"JED"
+
 };
 
 const cityNames = {
@@ -65,7 +67,7 @@ return res.sendStatus(200);
 }
 
 const from = message.from;
-const text = message.text?.body?.toLowerCase().trim();
+const text = message.text?.body?.trim();
 const listReply = message.interactive?.list_reply?.id;
 const buttonReply = message.interactive?.button_reply?.id;
 
