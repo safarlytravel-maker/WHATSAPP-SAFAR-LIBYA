@@ -85,11 +85,11 @@ if (message) {
 
     userState[from] = {};
 
-    await fetch(https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages, {
+    await fetch(`https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: Bearer ${ACCESS_TOKEN}
+        Authorization: `Bearer ${ACCESS_TOKEN}`
       },
       body: JSON.stringify({
         messaging_product: "whatsapp",
@@ -124,11 +124,11 @@ if (message) {
 
     userState[from].step = "from";
 
-    await fetch(https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages, {
+    await fetch(`https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: Bearer ${ACCESS_TOKEN}
+        Authorization: `Bearer ${ACCESS_TOKEN}`
       },
       body: JSON.stringify({
         messaging_product: "whatsapp",
@@ -165,11 +165,11 @@ if (message) {
     userState[from].from = listReply.replace("from_", "");
     userState[from].step = "to";
 
-    await fetch(https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages, {
+    await fetch(`https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: Bearer ${ACCESS_TOKEN}
+        Authorization: `Bearer ${ACCESS_TOKEN}`
       },
       body: JSON.stringify({
         messaging_product: "whatsapp",
@@ -206,11 +206,11 @@ if (message) {
     userState[from].to = listReply.replace("to_", "");
     userState[from].step = "date";
 
-    await fetch(https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages, {
+    await fetch(`https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: Bearer ${ACCESS_TOKEN}
+        Authorization: `Bearer ${ACCESS_TOKEN}`
       },
       body: JSON.stringify({
         messaging_product: "whatsapp",
@@ -243,11 +243,11 @@ const response = await amadeus.shopping.flightOffersSearch.get({
 const flight = response.data[0];
 if (!response.data || response.data.length === 0) {
 
-await fetch(https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages, {
+await fetch(`https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages`, {
 method: "POST",
 headers: {
 "Content-Type": "application/json",
-Authorization: Bearer ${ACCESS_TOKEN}
+Authorization: `Bearer ${ACCESS_TOKEN}`
 },
 body: JSON.stringify({
 messaging_product: "whatsapp",
@@ -263,11 +263,11 @@ return;
 }
 const airline = flight.validatingAirlineCodes[0];
 const price = flight.price.total;
-    await fetch(https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages, {
+    await fetch(`https://graph.facebook.com/v18.0/${PHONE_NUMBER_ID}/messages`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: Bearer ${ACCESS_TOKEN}
+        Authorization: `Bearer ${ACCESS_TOKEN}`
       },
       body: JSON.stringify({
         messaging_product: "whatsapp",
