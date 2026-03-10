@@ -97,8 +97,8 @@ if(text && text.includes("-") && ! state.step){
 
 let parts = text.split("-");
 
-let fromCity = parts[0].trim().toLowerCase();
-let toCity = parts[1].trim().toLowerCase();
+let fromCity = parts[0].trim();
+let toCity = parts[1].trim();
 
 state.from = fromCity;
 state.to = toCity;
